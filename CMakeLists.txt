@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.16)
 project(MohoClone VERSION 0.1 LANGUAGES CXX)
 
@@ -9,8 +8,14 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
 qt_add_executable(MohoClone main.cpp)
 
-target_link_libraries(MohoClone PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
+target_link_libraries(MohoClone PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+)
 
 set_target_properties(MohoClone PROPERTIES
-    QT_ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android"
+    QT_ANDROID_PACKAGE_NAME "com.wolfyholk.mohoclone"
+    QT_ANDROID_VERSION_NAME "0.1"
+    QT_ANDROID_VERSION_CODE 1
 )

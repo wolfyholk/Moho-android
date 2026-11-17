@@ -41,11 +41,8 @@ jobs:
 
       - name: Configure and Build APK
         run: |
-          export HOST_QT_PATH=$(find "${{ github.workspace }}/qt-host" -name "qmake" | xargs dirname | xargs dirname)
-          export ANDROID_QT_PATH=$(find "${{ github.workspace }}/qt-android" -name "qt-cmake" | xargs dirname | xargs dirname)
-
-          echo "Host Qt: $HOST_QT_PATH"
-          echo "Android Qt: $ANDROID_QT_PATH"
+          export HOST_QT_PATH="${{ github.workspace }}/qt-host/Qt/6.8.2/gcc_64"
+          export ANDROID_QT_PATH="${{ github.workspace }}/qt-android/Qt/6.8.2/android_arm64_v8a"
 
           $ANDROID_QT_PATH/bin/qt-cmake -B build -S . \
             -DQT_HOST_PATH=$HOST_QT_PATH \

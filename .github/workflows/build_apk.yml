@@ -18,9 +18,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK & NDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Qt Desktop (Host Tools)
         uses: jurplel/install-qt-action@v4
         with:
@@ -48,9 +45,9 @@ jobs:
           $ANDROID_QT_PATH/bin/qt-cmake -B build -S . \
             -DQT_HOST_PATH=$HOST_QT_PATH \
             -DANDROID_ABI=arm64-v8a \
-            -DANDROID_PLATFORM=android-33 \
-            -DANDROID_SDK_ROOT=$ANDROID_HOME \
-            -DANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME
+            -DANDROID_PLATFORM=android-34 \
+            -DANDROID_SDK_ROOT=$ANDROID_SDK_ROOT \
+            -DANDROID_NDK_ROOT=$ANDROID_NDK_ROOT
             
           cmake --build build --target apk
 

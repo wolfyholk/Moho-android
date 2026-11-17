@@ -39,9 +39,19 @@ jobs:
 
       - name: Configure and Build APK
         run: |
-          export HOST_QT_PATH=$(dirname $(dirname $(which qmake)))
-          export ANDROID_QT_PATH=$Qt6_DIR
+          export HOST_QT_PATH="$GITHUB_WORKSPACE/Qt/6.8.2/gcc_64"
+          export ANDROID_QT_PATH="$GITHUB_WORKSPACE/android/Qt/6.8.2/android_arm64_v8a"
           
+          if [ ! -d "$HOST_QT_PATH" ]; then
+            export HOST_QT_PATH=$(find $GITHUB_WORKSPACE -maxdepth 4 -name "gcc_64" | head -n 1)
+          fi
+          if [ ! -d "$ANDROID_QT_PATH" ]; then
+            export ANDROID_QT_PATH=$(find $GITHUB_WORKSPACE -maxdepth 5 -name "android_arm64_v8a" | head -n 1)
+          fi
+
+          echo "Host Qt: $HOST_QT_PATH"
+          echo "Android Qt: $ANDROID_QT_PATH"
+
           $ANDROID_QT_PATH/bin/qt-cmake -B build -S . \
             -DQT_HOST_PATH=$HOST_QT_PATH \
             -DANDROID_ABI=arm64-v8a \

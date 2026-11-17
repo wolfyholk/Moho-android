@@ -24,6 +24,7 @@ jobs:
           version: '6.8.2'
           host: 'linux'
           target: 'desktop'
+          dir: '${{ github.workspace }}/qt-host'
           aqtversion: '==3.3.*'
           py7zrversion: '==1.1.0'
 
@@ -34,20 +35,14 @@ jobs:
           host: 'all_os'
           target: 'android'
           arch: 'android_arm64_v8a'
+          dir: '${{ github.workspace }}/qt-android'
           aqtversion: '==3.3.*'
           py7zrversion: '==1.1.0'
 
       - name: Configure and Build APK
         run: |
-          export HOST_QT_PATH="$GITHUB_WORKSPACE/Qt/6.8.2/gcc_64"
-          export ANDROID_QT_PATH="$GITHUB_WORKSPACE/android/Qt/6.8.2/android_arm64_v8a"
-          
-          if [ ! -d "$HOST_QT_PATH" ]; then
-            export HOST_QT_PATH=$(find $GITHUB_WORKSPACE -maxdepth 4 -name "gcc_64" | head -n 1)
-          fi
-          if [ ! -d "$ANDROID_QT_PATH" ]; then
-            export ANDROID_QT_PATH=$(find $GITHUB_WORKSPACE -maxdepth 5 -name "android_arm64_v8a" | head -n 1)
-          fi
+          export HOST_QT_PATH=$(find "${{ github.workspace }}/qt-host" -name "qmake" | xargs dirname | xargs dirname)
+          export ANDROID_QT_PATH=$(find "${{ github.workspace }}/qt-android" -name "qt-cmake" | xargs dirname | xargs dirname)
 
           echo "Host Qt: $HOST_QT_PATH"
           echo "Android Qt: $ANDROID_QT_PATH"

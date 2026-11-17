@@ -12,16 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Qt for Android
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.6.3'
-          host: 'linux'
-          target: 'android'
-          arch: 'android_arm64_v8a'
-          setup-python: 'false'
-          aqtversion: '==3.1.*'
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -31,8 +21,41 @@ jobs:
       - name: Setup Android SDK & NDK
         uses: android-actions/setup-android@v3
 
+      - name: Install Qt Desktop (Host Tools)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.2'
+          host: 'linux'
+          target: 'desktop'
+          aqtversion: '==3.3.*'
+          py7zrversion: '==1.1.0'
+
+      - name: Install Qt for Android
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.2'
+          host: 'all_os'
+          target: 'android'
+          arch: 'android_arm64_v8a'
+          aqtversion: '==3.3.*'
+          py7zrversion: '==1.1.0'
+
       - name: Configure and Build APK
         run: |
-          cmake -B build -S . -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-33 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_LATEST_HOME/build/cmake/android.toolchain.cmake
-          cmake --build build --target apk
+          export HOST_QT_PATH=$(dirname $(dirname $(which qmake)))
+          export ANDROID_QT_PATH=$Qt6_DIR
           
+          $ANDROID_QT_PATH/bin/qt-cmake -B build -S . \
+            -DQT_HOST_PATH=$HOST_QT_PATH \
+            -DANDROID_ABI=arm64-v8a \
+            -DANDROID_PLATFORM=android-33 \
+            -DANDROID_SDK_ROOT=$ANDROID_HOME \
+            -DANDROID_NDK_ROOT=$ANDROID_NDK_LATEST_HOME
+            
+          cmake --build build --target apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MohoClone-Android-APK
+          path: build/android-build/build/outputs/apk/debug/*.apk
